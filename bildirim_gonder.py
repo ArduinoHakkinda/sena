@@ -9,7 +9,7 @@ ENV_FILE = Path(".env")
 if ENV_FILE.exists():
     load_dotenv(dotenv_path=ENV_FILE, override=True)
 
-# Ortam değişkenleri (GitHub Secrets'tan veya .env'den gelecek)
+# Ortam değişkenleri
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 ONESIGNAL_APP_ID = os.getenv("ONESIGNAL_APP_ID")
 ONESIGNAL_REST_API_KEY = os.getenv("ONESIGNAL_REST_API_KEY")
@@ -29,7 +29,6 @@ SYSTEM_PROMPT = "Sen Mithat'ın kız arkadaşı Sena'ya özel, gününe neşe ka
 USER_PROMPT = "Sena'yı gülümsetecek, sınav stresini unutturup enerjisini yükseltecek ve Mithat'ın her zaman onun yanında olduğunu hissettirecek 1-2 cümlelik eşsiz bir motivasyon mesajı yaz. Emeklerinin boşa gitmeyeceğini hatırlat. Mesajın sonuna '#ChatGPT Kankan#' eklemeyi unutma."
 
 def groq_mesaj_uret() -> str:
-    """Groq API'sini kullanarak motive edici mesajı üretir."""
     print("Groq API'sine bağlanılıyor...")
     url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
@@ -78,6 +77,11 @@ def bildirim_gonder(mesaj: str) -> None:
 
     try:
         response = requests.post(url, headers=headers, json=payload)
+        
+        # Hata varsa detaylı yanıtı yazdır
+        if response.status_code != 200:
+            print(f"OneSignal Detaylı Hata Yanıtı: {response.text}")
+        
         response.raise_for_status()
         print("✅ Bildirim başarıyla fırlatıldı!")
     except Exception as e:
