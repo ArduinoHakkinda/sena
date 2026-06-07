@@ -11,28 +11,35 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
-          notifyButton: {
-            enable: false, // Sağ alttaki zil ikonunu gizler
-          },
+          notifyButton: { enable: false },
         });
-        
-        // Sayfa açılır açılmaz üstten bildirim izin penceresini fırlatır
-        await OneSignal.Slidedown.promptPush();
       });
+
+      // Butona tıklandığında izni tetikleyen fonksiyon
+      function izinIste() {
+          window.OneSignalDeferred.push(async function(OneSignal) {
+              await OneSignal.Slidedown.promptPush();
+          });
+      }
     </script>
 
     <style>
-        /* Ekranın tamamen beyaz ve boş görünmesini sağlar */
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff; 
-            overflow: hidden;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #fdfdfd; 
+            display: flex; justify-content: center; align-items: center;
         }
+        .surpriz-buton {
+            padding: 18px 35px; font-size: 18px; color: white;
+            background-color: #ff85a2; border: none; border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(255, 133, 162, 0.4);
+            cursor: pointer; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: transform 0.2s;
+        }
+        .surpriz-buton:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
-    </body>
+    <button class="surpriz-buton" onclick="izinIste()">Sürprizi Aktif Et 🌸</button>
+</body>
 </html>
