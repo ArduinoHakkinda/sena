@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨</title>
+    
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
+          notifyButton: {
+            enable: false, // Sağ alttaki zil ikonunu gizler
+          },
+        });
+        
+        // Sayfa açılır açılmaz üstten bildirim izin penceresini fırlatır
+        await OneSignal.Slidedown.promptPush();
+      });
+    </script>
+
+    <style>
+        /* Ekranın tamamen beyaz ve boş görünmesini sağlar */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff; 
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    </body>
+</html>
