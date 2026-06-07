@@ -12,6 +12,19 @@
         await OneSignal.init({
           appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
           notifyButton: { enable: false },
+          promptOptions: {
+            slidedown: {
+              prompts: [{
+                type: "push",
+                autoPrompt: false,
+                text: {
+                  actionMessage: "Kaplumbayağı mutlu etmek ister misin? 🐢",
+                  acceptButton: "Evet! ✨",
+                  cancelButton: "Hayır"
+                }
+              }]
+            }
+          }
         });
       });
 
