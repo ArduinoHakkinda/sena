@@ -11,7 +11,7 @@ def surpriz_bildirim_gonder():
         print("❌ HATA: ONESIGNAL_REST_API_KEY bulunamadı!")
         return
 
-    # Yedek (Varsayılan) Mesaj - Groq çalışmazsa bu devreye girer
+    # Yedek (Varsayılan) Mesaj - Groq çalışmazsa veya hata verirse bu devreye girer
     baslik = "Günaydın Sena! 🌸"
     icerik = "Mithat seni çok seviyor, bugün senin günün olsun! ✨"
 
@@ -32,8 +32,8 @@ def surpriz_bildirim_gonder():
             user_prompt = f"Sistem Saati: {anlik_zaman}. Sena'ya gülümsetecek, enerjisini yükseltecek ve Mithat'ın yanında olduğunu hissettirecek, en az 3-4 cümlelik doyurucu ve biraz uzun bir günaydın mesajı yaz. ASLA önceki mesajlarını tekrar etme, her gün yepyeni ve eşsiz bir motivasyon konusu bul. Ona gücüne ne kadar güvendiğini ve YKS'de kesinlikle başarılı olacağına olan inancını ekle. Mesajın sonuna '#ChatGPT Kankan#' eklemeyi unutma."
 
             groq_payload = {
-                # Groq'un en kararlı ve kalıcı modeline geçiş yaptık:
-                "model": "llama3-8b-8192", 
+                # Groq'un en güncel, desteklenen ve kararlı amiral gemisi modeli:
+                "model": "llama-3.3-70b-versatile", 
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
