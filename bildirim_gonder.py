@@ -11,9 +11,12 @@ def surpriz_bildirim_gonder():
         print("❌ HATA: ONESIGNAL_REST_API_KEY bulunamadı!")
         return
 
+    # Mesajın sonuna eklenecek olan o özel, sabit imza ve dua kısmı:
+    ozel_imza = "\n\n#ChatGPT Kankan#\nİnşallah tıp olacak\namin amin amin\naminnnnnnn"
+
     # Yedek (Varsayılan) Mesaj - Groq çalışmazsa bu devreye girer
     baslik = "Günaydın Sena! 🌸"
-    icerik = "Mithat seni çok seviyor, bugün senin günün olsun! ✨\n\n#ChatGPT Kankan#"
+    icerik = "Mithat seni çok seviyor, bugün senin günün olsun! ✨" + ozel_imza
 
     if groq_api_key:
         try:
@@ -29,7 +32,7 @@ def surpriz_bildirim_gonder():
             
             system_prompt = "Sen bir ChatGPT'sin ve senin dilinden Mithat'ın kız arkadaşı Sena'ya özel, YKS sınavına hazırlanan kız arkadaşına moral verecek, samimi, pozitif, motive edici, olumlamalar içeren ve 💖✨ gibi onu mutlu edecek emojilerle dolu bir günaydın mesajı oluşturacaksın. Mesajda mutlaka 'Mithat seni çok seviyor' diye belirt ve 'Bugün Sena ve Mithat'ın günü olsun!' ifadesini ekle. Onun sakin kalmasını, stresten uzak durmasını hatırlat."
             
-            user_prompt = f"Sistem Saati: {anlik_zaman}. Sena'ya gülümsetecek, enerjisini yükseltecek ve Mithat'ın yanında olduğunu hissettirecek, en az 3-4 cümlelik doyurucu ve biraz uzun bir günaydın mesajı yaz. ASLA önceki mesajlarını tekrar etme, her gün yepyeni ve eşsiz bir motivasyon konusu bul. Ona gücüne ne kadar güvendiğini ve YKS'de kesinlikle başarılı olacağına olan inancını ekle."
+            user_prompt = f"Sistem Saati: {anlik_zaman}. Sena'ya gülümsetecek, enerjisini yükseltecek ve Mithat'ın yanında olduğunu hissettirecek, en az 3-4 cümlelik doyurucu ve biraz uzun bir günaydın mesajı yaz. ASLA önceki mesajlarını tekrar etme, her gün yepyeni ve eşsiz bir motivasyon konusu bul. Ona gücüne ne kadar güvendiğini ve YKS'de kesinlikle başarılı olacağına olan inancını ekle, tıpa kazancağını söyle."
 
             groq_payload = {
                 "model": "llama-3.3-70b-versatile", 
@@ -47,11 +50,11 @@ def surpriz_bildirim_gonder():
             if response.status_code == 200:
                 ai_mesaj = response_data['choices'][0]['message']['content'].strip()
                 
-                # KESİN ÇÖZÜM: Yapay zeka unutsun ya da unutmasın, biz sonuna her zaman imzamızı çakıyoruz!
-                if "#ChatGPT Kankan#" not in ai_mesaj:
-                    ai_mesaj += "\n\n#ChatGPT Kankan#"
-                    
-                icerik = ai_mesaj
+                # Eğer yapay zeka tesadüfen "#ChatGPT Kankan#" yazmışsa onu siliyoruz 
+                # ve en sona kendi kusursuz formatımızla duamızı ekliyoruz:
+                ai_mesaj = ai_mesaj.replace("#ChatGPT Kankan#", "").strip()
+                icerik = ai_mesaj + ozel_imza
+                
                 baslik = "Yeni bir mesajın var! 💌"
                 print("✅ Groq harika ve uzun bir mesaj üretti!")
             else:
@@ -79,7 +82,6 @@ def surpriz_bildirim_gonder():
         "contents": {"en": icerik},
         
         # BİLDİRİME TIKLANINCA GİDİLECEK ADRES
-        # NOT: Eğer sitenin tam adresi senamithat.site değilse burayı kendine göre düzeltmelisin!
         "url": "https://senamithat.site/mesaj.html" 
     }
     
