@@ -32,7 +32,8 @@ def surpriz_bildirim_gonder():
             user_prompt = f"Sistem Saati: {anlik_zaman}. Sena'ya gülümsetecek, enerjisini yükseltecek ve Mithat'ın yanında olduğunu hissettirecek, en az 3-4 cümlelik doyurucu ve biraz uzun bir günaydın mesajı yaz. ASLA önceki mesajlarını tekrar etme, her gün yepyeni ve eşsiz bir motivasyon konusu bul. Ona gücüne ne kadar güvendiğini ve YKS'de kesinlikle başarılı olacağına olan inancını ekle. Mesajın sonuna '#ChatGPT Kankan#' eklemeyi unutma."
 
             groq_payload = {
-                "model": "llama-3.1-70b-versatile", # YENİ VE GÜNCEL MODEL BURADA
+                # Groq'un en kararlı ve kalıcı modeline geçiş yaptık:
+                "model": "llama3-8b-8192", 
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
