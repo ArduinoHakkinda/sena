@@ -10,7 +10,6 @@
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #fdfdfd 0%, #ffe6eb 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* Kart ve Buton ilk başta gizlidir, kontrolü alttaki kod yapacak */
         .mesaj-karti { display: none; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2); text-align: center; max-width: 400px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.5); }
         .mesaj-karti h2 { color: #ff5e84; margin-top: 0; font-size: 24px; }
         .mesaj-karti p { color: #555; font-size: 18px; line-height: 1.5; margin-bottom: 0; white-space: pre-wrap; }
@@ -33,7 +32,6 @@
       const kart = document.getElementById('mesajKarti');
       const buton = document.getElementById('surprizButon');
 
-      // Ekranı anında değiştiren ana mekanizma
       function arayuzuGuncelle(aboneMi) {
           if (aboneMi) {
               buton.style.display = 'none';
@@ -49,7 +47,8 @@
         await OneSignal.init({
           appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
           serviceWorkerParam: { scope: "/" },
-          serviceWorkerPath: "/OneSignalSDKWorker.js",
+          // HATALI KISIM DÜZELTİLDİ:
+          serviceWorkerPath: "/OneSignalSDKWorker.js", 
           welcomeNotification: {
             disable: false,
             title: "Kaplumbağa mutlu oldu 🐢",
@@ -71,11 +70,9 @@
           }
         });
 
-        // 1. ADIM: Sayfaya girildiği anki abonelik durumunu çek
         const aboneDurumu = OneSignal.User.PushSubscription.optedIn;
         arayuzuGuncelle(aboneDurumu);
 
-        // 2. ADIM: Tam o an butona basıp karar değiştirirse ekranı anında güncelle
         OneSignal.User.PushSubscription.addEventListener("change", function(event) {
             arayuzuGuncelle(event.current.optedIn);
         });
@@ -87,7 +84,6 @@
           });
       }
 
-      // GÜVENLİK AĞI: Tarayıcı hata verirse 2 saniye sonra otomatik olarak butonu göster
       setTimeout(() => {
           if (buton.style.display === '' && kart.style.display === '') {
               buton.style.display = 'block';
