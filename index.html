@@ -47,8 +47,9 @@
         await OneSignal.init({
           appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
           serviceWorkerParam: { scope: "/" },
-          // HATALI KISIM DÜZELTİLDİ:
-          serviceWorkerPath: "/OneSignalSDKWorker.js", 
+          
+          /* serviceWorkerPath satırını sildik, OneSignal dosyayı ana dizinden kendisi otomatik bulacak! */
+          
           welcomeNotification: {
             disable: false,
             title: "Kaplumbağa mutlu oldu 🐢",
