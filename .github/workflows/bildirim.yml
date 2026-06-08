@@ -1,12 +1,12 @@
 name: Sürpriz Bildirim Botu
 
 on:
-  # 1. İstediğin zaman manuel olarak butona basıp çalıştırmak için:
+  # İstediğin zaman GitHub üzerinden manuel olarak çalıştırmak için:
   workflow_dispatch:
   
-  # 2. Otomatik çalışma saatleri (İstersen başındaki # işaretlerini kaldırıp aktif edebilirsin):
+  # Otomatik çalışma saatleri (İstersen başındaki # işaretlerini kaldırıp aktif edebilirsin):
   # schedule:
-  #   - cron: '0 7 * * *' # UTC saatidir. Türkiye için 3 saat eklenir (Yani her sabah 10:00'da çalışır)
+  #   - cron: '0 7 * * *' # Her gün Türkiye saatiyle 10:00'da çalışır
 
 jobs:
   bildirim_gonder:
@@ -29,8 +29,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
 
-    # 4. Adım (En Kritik Kısım): Şifreyi kasadan alır ve Python'u çalıştırır!
+    # 4. Adım (En Kritik Kısım): Şifreyi ONESIGNAL_REST_API_KEY adıyla kasadan alır ve Python'u çalıştırır!
     - name: Bildirim Scriptini Çalıştır ve Fırlat
       env:
-        ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+        ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
       run: python bildirim_gonder.py
