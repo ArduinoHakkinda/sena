@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨</title>
     
-    <!-- OneSignal Web SDK -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
+          // Tarayıcının yolu karıştırmaması için tam URL kullanıyoruz
           serviceWorkerParam: { scope: "/sena/" },
-          serviceWorkerPath: "/sena/OneSignalSDKWorker.js",
+          serviceWorkerPath: "https://arduinohakkinda.github.io/sena/OneSignalSDKWorker.js",
           notifyButton: { enable: false },
           promptOptions: {
             slidedown: {
