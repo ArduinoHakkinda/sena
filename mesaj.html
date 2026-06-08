@@ -5,40 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yeni Mesajın Var 💌</title>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-          // Her seferinde en güncel mesajı çeker
-          fetch('/mesaj.json?t=' + Math.random())
+      function mesajCek() {
+          fetch('/mesaj.json?t=' + new Date().getTime())
               .then(response => response.json())
               .then(data => {
                   document.getElementById('mesajBaslik').innerText = data.baslik;
                   document.getElementById('mesajIcerik').innerText = data.icerik;
-              })
-              .catch(error => {
-                  document.getElementById('mesajBaslik').innerText = "Günaydın! 🌸";
-                  document.getElementById('mesajIcerik').innerText = "Senin için güzel şeyler hazırlanıyor... ✨";
               });
-      });
+      }
+      document.addEventListener("DOMContentLoaded", mesajCek);
     </script>
     <style>
-        /* height yerine min-height kullandık ve padding ekledik */
-        body, html { margin: 0; padding: 0; width: 100%; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #fdfdfd 0%, #ffe6eb 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; box-sizing: border-box; padding-top: 20px; padding-bottom: 20px; }
-        
-        /* max-height ve overflow-y eklendi (Uzun yazılarda kaydırma çubuğu çıkar) */
-        .mesaj-karti { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2); text-align: center; width: 85%; max-width: 400px; border: 1px solid rgba(255, 255, 255, 0.5); max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
-        
-        .mesaj-karti h2 { color: #ff5e84; margin-top: 0; font-size: 24px; }
-        .mesaj-karti p { color: #555; font-size: 18px; line-height: 1.5; margin-bottom: 0; white-space: pre-wrap; word-wrap: break-word; }
-
-        /* Kaydırma çubuğunun telefonda zarif ve pembe görünmesi için ekstra dokunuş */
-        .mesaj-karti::-webkit-scrollbar { width: 6px; }
-        .mesaj-karti::-webkit-scrollbar-track { background: transparent; }
-        .mesaj-karti::-webkit-scrollbar-thumb { background: #ffb6c1; border-radius: 10px; }
+        body, html { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #fdfdfd 0%, #ffe6eb 100%); font-family: sans-serif; }
+        .mesaj-karti { background: rgba(255, 255, 255, 0.8); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2); text-align: center; width: 85%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
+        .btn-yenile { margin-top:20px; padding:10px 20px; background:#ff85a2; color:white; border:none; border-radius:20px; cursor:pointer; }
     </style>
 </head>
 <body>
     <div class="mesaj-karti">
         <h2 id="mesajBaslik">Yükleniyor...</h2>
         <p id="mesajIcerik">...</p>
+        <button class="btn-yenile" onclick="location.reload()">Mesajı Güncelle 🔄</button>
     </div>
 </body>
 </html>
