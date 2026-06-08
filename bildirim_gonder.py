@@ -4,7 +4,7 @@ import os
 
 def surpriz_bildirim_gonder():
     # Şifreyi GitHub Secrets üzerinden çekiyoruz (Güvenli Yol)
-    api_key = os.environ.get("ONESIGNAL_API_KEY")
+    api_key = os.environ.get("ONESIGNAL_REST_API_KEY")
     
     if not api_key:
         print("❌ HATA: API Anahtarı bulunamadı!")
