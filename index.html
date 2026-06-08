@@ -6,95 +6,93 @@
     <title>Sena & Mithat ✨</title>
     
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      // SAYFA TAMAMEN YÜKLENMEDEN HİÇBİR İŞLEM YAPMA (Hata vermemesi için)
-      document.addEventListener("DOMContentLoaded", () => {
-          
-          const kart = document.getElementById('mesajKarti');
-          const buton = document.getElementById('surprizButon');
-          const baslik = document.getElementById('mesajBaslik');
-          const icerik = document.getElementById('mesajIcerik');
-
-          // Arayüzü duruma göre anında değiştiren kontrolcü fonksiyonumuz
-          function arayuzuGuncelle(aboneMi) {
-              if (aboneMi) {
-                  // İzin verildiyse veya eski kullanıcıysa: Butonu yok et, sürprizi göster!
-                  buton.style.display = 'none';
-                  kart.style.display = 'block';
-                  baslik.innerText = "Kaplumbağa mutlu oldu 🐢";
-                  icerik.innerText = "Beklemede kal... ✨";
-              } else {
-                  // Yeni giriyorsa ve izin yoksa: Kartı gizle, sadece butonu göster.
-                  buton.style.display = 'block';
-                  kart.style.display = 'none';
-              }
-          }
-
-          window.OneSignalDeferred = window.OneSignalDeferred || [];
-          OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-              appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
-              serviceWorkerParam: { scope: "/" },
-              serviceWorkerPath: "/OneSignalSDKWorker.js",
-              welcomeNotification: {
-                disable: false,
-                title: "Kaplumbağa mutlu oldu 🐢",
-                message: "Beklemede kal... ✨"
-              },
-              notifyButton: { enable: false },
-              promptOptions: {
-                slidedown: {
-                  prompts: [{
-                    type: "push",
-                    autoPrompt: false,
-                    text: {
-                      actionMessage: "Kaplumbayağı mutlu etmek ister misin? 🐢",
-                      acceptButton: "Evet! ✨",
-                      cancelButton: "Hayır"
-                    }
-                  }]
-                }
-              }
-            });
-
-            // 1. KONTROL: Sayfa ilk açıldığında durumu anında kontrol edip arayüzü çizer
-            arayuzuGuncelle(OneSignal.User.PushSubscription.optedIn);
-
-            // 2. KONTROL: Tam o saniye "Evet" butonuna basıldığı anı yakalayıp ekranı değiştirir
-            OneSignal.User.PushSubscription.addEventListener("change", function(event) {
-                arayuzuGuncelle(event.current.optedIn);
-            });
-          });
-      });
-
-      // Pembe butona basıldığında OneSignal'ın izin penceresini açan komut
-      function izinIste() {
-          window.OneSignalDeferred.push(async function(OneSignal) {
-              await OneSignal.Slidedown.promptPush();
-          });
-      }
-    </script>
     
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #fdfdfd 0%, #ffe6eb 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* Kart ilk başta gizli başlar, JS duruma göre açar */
+        /* Kart ve Buton ilk başta gizlidir, kontrolü alttaki kod yapacak */
         .mesaj-karti { display: none; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2); text-align: center; max-width: 400px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.5); }
         .mesaj-karti h2 { color: #ff5e84; margin-top: 0; font-size: 24px; }
         .mesaj-karti p { color: #555; font-size: 18px; line-height: 1.5; margin-bottom: 0; white-space: pre-wrap; }
         
-        /* Buton ilk başta gizli başlar, JS duruma göre açar */
         .surpriz-buton { display: none; padding: 16px 32px; font-size: 16px; color: white; font-weight: bold; background-color: #ff85a2; border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 133, 162, 0.4); transition: all 0.3s ease; }
         .surpriz-buton:hover { background-color: #ff5e84; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 133, 162, 0.6); }
         .surpriz-buton:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
+
     <div id="mesajKarti" class="mesaj-karti">
         <h2 id="mesajBaslik">Kaplumbağa mutlu oldu 🐢</h2>
         <p id="mesajIcerik">Beklemede kal... ✨</p>
     </div>
     
     <button id="surprizButon" class="surpriz-buton" onclick="izinIste()">Sürprizi Aktif Et 🌸</button>
+
+    <script>
+      const kart = document.getElementById('mesajKarti');
+      const buton = document.getElementById('surprizButon');
+
+      // Ekranı anında değiştiren ana mekanizma
+      function arayuzuGuncelle(aboneMi) {
+          if (aboneMi) {
+              buton.style.display = 'none';
+              kart.style.display = 'block';
+          } else {
+              buton.style.display = 'block';
+              kart.style.display = 'none';
+          }
+      }
+
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
+          serviceWorkerParam: { scope: "/" },
+          serviceWorkerPath: "/OneSignalSDKWorker.js",
+          welcomeNotification: {
+            disable: false,
+            title: "Kaplumbağa mutlu oldu 🐢",
+            message: "Beklemede kal... ✨"
+          },
+          notifyButton: { enable: false },
+          promptOptions: {
+            slidedown: {
+              prompts: [{
+                type: "push",
+                autoPrompt: false,
+                text: {
+                  actionMessage: "Kaplumbayağı mutlu etmek ister misin? 🐢",
+                  acceptButton: "Evet! ✨",
+                  cancelButton: "Hayır"
+                }
+              }]
+            }
+          }
+        });
+
+        // 1. ADIM: Sayfaya girildiği anki abonelik durumunu çek
+        const aboneDurumu = OneSignal.User.PushSubscription.optedIn;
+        arayuzuGuncelle(aboneDurumu);
+
+        // 2. ADIM: Tam o an butona basıp karar değiştirirse ekranı anında güncelle
+        OneSignal.User.PushSubscription.addEventListener("change", function(event) {
+            arayuzuGuncelle(event.current.optedIn);
+        });
+      });
+
+      function izinIste() {
+          window.OneSignalDeferred.push(async function(OneSignal) {
+              await OneSignal.Slidedown.promptPush();
+          });
+      }
+
+      // GÜVENLİK AĞI: Tarayıcı hata verirse 2 saniye sonra otomatik olarak butonu göster
+      setTimeout(() => {
+          if (buton.style.display === '' && kart.style.display === '') {
+              buton.style.display = 'block';
+          }
+      }, 2000);
+    </script>
 </body>
 </html>
