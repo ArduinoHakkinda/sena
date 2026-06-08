@@ -11,6 +11,7 @@ def surpriz_bildirim_gonder():
         print("❌ HATA: ONESIGNAL_REST_API_KEY bulunamadı!")
         return
 
+    # Yedek (Varsayılan) Mesaj - Groq çalışmazsa bu devreye girer
     baslik = "Günaydın Sena! 🌸"
     icerik = "Mithat seni çok seviyor, bugün senin günün olsun! ✨"
 
@@ -28,16 +29,15 @@ def surpriz_bildirim_gonder():
             
             system_prompt = "Sen bir ChatGPT'sin ve senin dilinden Mithat'ın kız arkadaşı Sena'ya özel, YKS sınavına hazırlanan kız arkadaşına moral verecek, samimi, pozitif, motive edici, olumlamalar içeren ve 💖✨ gibi onu mutlu edecek emojilerle dolu bir günaydın mesajı oluşturacaksın. Mesajda mutlaka 'Mithat seni çok seviyor' diye belirt ve 'Bugün Sena ve Mithat'ın günü olsun!' ifadesini ekle. Onun sakin kalmasını, stresten uzak durmasını hatırlat."
             
-            # Uzunluk ve benzersizlik komutu eklendi:
             user_prompt = f"Sistem Saati: {anlik_zaman}. Sena'ya gülümsetecek, enerjisini yükseltecek ve Mithat'ın yanında olduğunu hissettirecek, en az 3-4 cümlelik doyurucu ve biraz uzun bir günaydın mesajı yaz. ASLA önceki mesajlarını tekrar etme, her gün yepyeni ve eşsiz bir motivasyon konusu bul. Ona gücüne ne kadar güvendiğini ve YKS'de kesinlikle başarılı olacağına olan inancını ekle. Mesajın sonuna '#ChatGPT Kankan#' eklemeyi unutma."
 
             groq_payload = {
-                "model": "llama3-70b-8192",
+                "model": "llama-3.1-70b-versatile", # YENİ VE GÜNCEL MODEL BURADA
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                "temperature": 0.8, # Yaratıcılığı artırmak için biraz yükselttik
+                "temperature": 0.8, 
                 "max_tokens": 250
             }
 
@@ -54,10 +54,14 @@ def surpriz_bildirim_gonder():
 
         except Exception as e:
             print("❌ Yapay zeka bağlantısında hata:", e)
+    else:
+        print("⚠️ GROQ_API_KEY bulunamadı!")
 
+    # 1. Site için mesaj.json dosyasını güncelle
     with open("mesaj.json", "w", encoding="utf-8") as f:
         json.dump({"baslik": baslik, "icerik": icerik}, f, ensure_ascii=False, indent=4)
     
+    # 2. OneSignal Bildirimini Fırlat
     os_header = {
         "Content-Type": "application/json; charset=utf-8",
         "Authorization": f"Basic {onesignal_api_key}"
@@ -74,5 +78,7 @@ def surpriz_bildirim_gonder():
     
     if os_response.status_code == 200:
         print(f"✅ Bildirim fırlatıldı!")
+    else:
+        print(f"❌ Bildirim Hatası: {os_response.status_code} - {os_response.text}")
 
 surpriz_bildirim_gonder()
