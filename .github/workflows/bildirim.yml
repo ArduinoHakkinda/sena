@@ -1,36 +1,39 @@
 name: Sürpriz Bildirim Botu
 
 on:
-  # İstediğin zaman GitHub üzerinden manuel olarak çalıştırmak için:
   workflow_dispatch:
-  
-  # Otomatik çalışma saatleri (İstersen başındaki # işaretlerini kaldırıp aktif edebilirsin):
   # schedule:
-  #   - cron: '0 7 * * *' # Her gün Türkiye saatiyle 10:00'da çalışır
+  #   - cron: '0 5 * * *' # Türkiye saatiyle sabah 08:00'da çalışır
 
 jobs:
   bildirim_gonder:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Adım: GitHub'daki dosyalarını (Python kodunu vs.) çalışma alanına çeker
     - name: Repoyu Klonla
       uses: actions/checkout@v4
 
-    # 2. Adım: Ubuntu sunucusuna Python kurar
     - name: Python Kurulumu
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
-    # 3. Adım: Python kodumuzun çalışması için gereken 'requests' kütüphanesini yükler
     - name: Gerekli Kütüphaneleri Yükle
       run: |
         python -m pip install --upgrade pip
         pip install requests
 
-    # 4. Adım (En Kritik Kısım): Şifreyi ONESIGNAL_REST_API_KEY adıyla kasadan alır ve Python'u çalıştırır!
-    - name: Bildirim Scriptini Çalıştır ve Fırlat
+    # Şifreler buraya! (GROQ_API_KEY eklendi)
+    - name: Bildirim Scriptini Çalıştır
       env:
         ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       run: python bildirim_gonder.py
+
+    - name: Yeni Mesajı Siteye Kaydet
+      run: |
+        git config --global user.name "ChatGPT Kankan"
+        git config --global user.email "bot@senamithat.site"
+        git add mesaj.json
+        git commit -m "Sena için yeni günaydın mesajı hazırlandı ✨" || echo "Değişiklik yok"
+        git push
