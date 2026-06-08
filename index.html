@@ -39,42 +39,27 @@
         const baslik = document.getElementById('mesajBaslik');
         const icerik = document.getElementById('mesajIcerik');
 
-        // Yapay zekanın (Groq) hazırladığı asıl mesajı çeken sistem
-        function asilMesajiCek() {
-            fetch('/mesaj.json?t=' + Math.random())
-              .then(response => response.json())
-              .then(data => {
-                  baslik.innerText = data.baslik;
-                  icerik.innerText = data.icerik;
-              })
-              .catch(error => {
-                  baslik.innerText = "Günaydın! 🌸";
-                  icerik.innerText = "Senin için güzel şeyler hazırlanıyor... ✨";
-              });
-        }
-
-        // 1. SENARYO: Site ilk açıldığında durum kontrolü
+        // Site açıldığında durum kontrolü
         if (OneSignal.User.PushSubscription.optedIn) {
-            // Eğer önceden izin verdiyse: Buton YOK, Kart VAR, Asıl Mesaj VAR.
+            // Zaten aboneyse: Buton gizlenir, sabit sürpriz kartı görünür.
             buton.style.display = 'none';
             kart.style.display = 'block';
-            asilMesajiCek();
+            baslik.innerText = "Sürprizler Hazır 🌸";
+            icerik.innerText = "Kaplumbağa her gün sana mesaj getirecek. Beklemede kal! 🐢✨";
         } else {
-            // Eğer ilk defa giriyorsa: Buton VAR, Kart YOK (Gizem korunuyor).
+            // Abone değilse: Sadece Buton görünür.
             buton.style.display = 'block';
             kart.style.display = 'none';
         }
 
-        // 2. SENARYO: Tam o an butona basıp izin verme anı
+        // İzin verildiği anki tepki
         OneSignal.User.PushSubscription.addEventListener("change", function(event) {
             if (event.current.optedIn) {
-                // İzin verildiği o ilk saniye: Buton KAYBOLUR, Kart ÇIKAR ve kaplumbağa sürprizi görünür!
                 buton.style.display = 'none';
                 kart.style.display = 'block';
                 baslik.innerText = "Kaplumbağa mutlu oldu 🐢";
                 icerik.innerText = "Beklemede kal... ✨";
             } else {
-                // İzni iptal ederse en başa döner
                 buton.style.display = 'block';
                 kart.style.display = 'none';
             }
@@ -89,13 +74,9 @@
     </script>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #fdfdfd 0%, #ffe6eb 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        /* Kart ilk başta kod tarafından kapalı tutulur */
         .mesaj-karti { display: none; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2); text-align: center; max-width: 400px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.5); }
         .mesaj-karti h2 { color: #ff5e84; margin-top: 0; font-size: 24px; }
         .mesaj-karti p { color: #555; font-size: 18px; line-height: 1.5; margin-bottom: 0; white-space: pre-wrap; }
-        
-        /* Buton ilk başta kod tarafından kapalı tutulur */
         .surpriz-buton { display: none; padding: 16px 32px; font-size: 16px; color: white; font-weight: bold; background-color: #ff85a2; border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 133, 162, 0.4); transition: all 0.3s ease; }
         .surpriz-buton:hover { background-color: #ff5e84; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 133, 162, 0.6); }
         .surpriz-buton:active { transform: scale(0.95); }
@@ -106,7 +87,6 @@
         <h2 id="mesajBaslik">Yükleniyor...</h2>
         <p id="mesajIcerik">...</p>
     </div>
-    
     <button id="surprizButon" class="surpriz-buton" onclick="izinIste()">Sürprizi Aktif Et 🌸</button>
 </body>
 </html>
