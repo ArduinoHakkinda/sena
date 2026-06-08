@@ -11,7 +11,7 @@ def surpriz_bildirim_gonder():
         print("❌ HATA: ONESIGNAL_REST_API_KEY bulunamadı!")
         return
 
-    # Yedek (Varsayılan) Mesaj
+    # Yedek (Varsayılan) Mesaj - Groq çalışmazsa bu devreye girer
     baslik = "Günaydın Sena! 🌸"
     icerik = "Mithat seni çok seviyor, bugün senin günün olsun! ✨\n\n#ChatGPT Kankan#"
 
@@ -24,11 +24,11 @@ def surpriz_bildirim_gonder():
                 "Content-Type": "application/json"
             }
             
+            # Anlık zamanı alıyoruz ki yapay zeka her çalıştığında yepyeni bir çıktı versin
             anlik_zaman = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             system_prompt = "Sen bir ChatGPT'sin ve senin dilinden Mithat'ın kız arkadaşı Sena'ya özel, YKS sınavına hazırlanan kız arkadaşına moral verecek, samimi, pozitif, motive edici, olumlamalar içeren ve 💖✨ gibi onu mutlu edecek emojilerle dolu bir günaydın mesajı oluşturacaksın. Mesajda mutlaka 'Mithat seni çok seviyor' diye belirt ve 'Bugün Sena ve Mithat'ın günü olsun!' ifadesini ekle. Onun sakin kalmasını, stresten uzak durmasını hatırlat."
             
-            # İstediğimiz imzayı kendimiz ekleyeceğimiz için prompt'tan o kısmı çıkardık
             user_prompt = f"Sistem Saati: {anlik_zaman}. Sena'ya gülümsetecek, enerjisini yükseltecek ve Mithat'ın yanında olduğunu hissettirecek, en az 3-4 cümlelik doyurucu ve biraz uzun bir günaydın mesajı yaz. ASLA önceki mesajlarını tekrar etme, her gün yepyeni ve eşsiz bir motivasyon konusu bul. Ona gücüne ne kadar güvendiğini ve YKS'de kesinlikle başarılı olacağına olan inancını ekle."
 
             groq_payload = {
@@ -76,13 +76,17 @@ def surpriz_bildirim_gonder():
         "app_id": "f66f725a-9c4b-4f45-8f5c-33118e634400",
         "included_segments": ["Total Subscriptions"], 
         "headings": {"en": baslik},
-        "contents": {"en": icerik}
+        "contents": {"en": icerik},
+        
+        # BİLDİRİME TIKLANINCA GİDİLECEK ADRES
+        # NOT: Eğer sitenin tam adresi senamithat.site değilse burayı kendine göre düzeltmelisin!
+        "url": "https://senamithat.site/mesaj.html" 
     }
     
     os_response = requests.post("https://onesignal.com/api/v1/notifications", headers=os_header, data=json.dumps(os_payload))
     
     if os_response.status_code == 200:
-        print(f"✅ Bildirim fırlatıldı!")
+        print(f"✅ Bildirim fırlatıldı! Yönlendirme adresi: {os_payload['url']}")
     else:
         print(f"❌ Bildirim Hatası: {os_response.status_code} - {os_response.text}")
 
