@@ -7,7 +7,6 @@
     
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
-      // OneSignal Kurulumu
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
@@ -15,10 +14,10 @@
           serviceWorkerParam: { scope: "/" },
           serviceWorkerPath: "/OneSignalSDKWorker.js",
           
-          // GÜNCELLENEN HOŞ GELDİN MESAJI:
+          // Kabul edince gidecek olan Hoş Geldin mesajı:
           welcomeNotification: {
             disable: false,
-            title: "Kaplumbağa çok mutlu 🐢",
+            title: "Kaplumbağa mutlu oldu 🐢",
             message: "Beklemede kal... ✨"
           },
           
@@ -28,6 +27,8 @@
               prompts: [{
                 type: "push",
                 autoPrompt: false,
+                
+                // İzin isterken çıkacak olan Sürpriz mesajı:
                 text: {
                   actionMessage: "Kaplumbayağı mutlu etmek ister misin? 🐢",
                   acceptButton: "Evet! ✨",
@@ -37,6 +38,18 @@
             }
           }
         });
+
+        // Aboneyse butonu gizle
+        if (OneSignal.User.PushSubscription.optedIn) {
+            document.getElementById('surprizButon').style.display = 'none';
+        }
+
+        // O an abone olursa butonu gizle
+        OneSignal.User.PushSubscription.addEventListener("change", function(event) {
+            if (event.current.optedIn) {
+                document.getElementById('surprizButon').style.display = 'none';
+            }
+        });
       });
 
       function izinIste() {
@@ -45,21 +58,36 @@
           });
       }
 
-      // Son Mesajı Çekme İşlemi (mesaj.json dosyasından okur)
       document.addEventListener("DOMContentLoaded", () => {
-          fetch('/mesaj.json')
+          fetch('/mesaj.json?t=' + new Date().getTime())
               .then(response => response.json())
               .then(data => {
                   document.getElementById('mesajBaslik').innerText = data.baslik;
                   document.getElementById('mesajIcerik').innerText = data.icerik;
               })
               .catch(error => {
-                  // Eğer mesaj.json dosyası henüz yoksa veya okunamazsa ekranda bu yazar:
-                  document.getElementById('mesajBaslik').innerText = "Kaplumbağa çok mutlu 🐢";
+                  // Henüz mesaj.json yoksa ekranda görünecek varsayılan metin:
+                  document.getElementById('mesajBaslik').innerText = "Kaplumbağa mutlu oldu 🐢";
                   document.getElementById('mesajIcerik').innerText = "Beklemede kal... ✨";
               });
       });
     </script>
     <style>
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%;
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #fdfdfd 0%, #ffe6eb 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .mesaj-karti { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2); text-align: center; max-width: 400px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.5); }
+        .mesaj-karti h2 { color: #ff5e84; margin-top: 0; font-size: 24px; }
+        .mesaj-karti p { color: #555; font-size: 18px; line-height: 1.5; margin-bottom: 0; white-space: pre-wrap; }
+        .surpriz-buton { padding: 16px 32px; font-size: 16px; color: white; font-weight: bold; background-color: #ff85a2; border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 133, 162, 0.4); transition: all 0.3s ease; }
+        .surpriz-buton:hover { background-color: #ff5e84; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 133, 162, 0.6); }
+        .surpriz-buton:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <div class="mesaj-karti">
+        <h2 id="mesajBaslik">Yükleniyor...</h2>
+        <p id="mesajIcerik">...</p>
+    </div>
+    
+    <button id="surprizButon" class="surpriz-buton" onclick="izinIste()">Sürprizi Aktif Et 🌸</button>
+</body>
+</html>
