@@ -41,11 +41,11 @@
 
         // Site açıldığında durum kontrolü
         if (OneSignal.User.PushSubscription.optedIn) {
-            // Zaten aboneyse: Buton gizlenir, sabit sürpriz kartı görünür.
+            // Zaten aboneyse: Buton gizlenir, doğrudan kaplumbağa mesajı görünür.
             buton.style.display = 'none';
             kart.style.display = 'block';
-            baslik.innerText = "Sürprizler Hazır 🌸";
-            icerik.innerText = "Kaplumbağa her gün sana mesaj getirecek. Beklemede kal! 🐢✨";
+            baslik.innerText = "Kaplumbağa mutlu oldu 🐢";
+            icerik.innerText = "Beklemede kal... ✨";
         } else {
             // Abone değilse: Sadece Buton görünür.
             buton.style.display = 'block';
