@@ -3,11 +3,15 @@ name: Sürpriz Bildirim Botu
 on:
   workflow_dispatch:
   # schedule:
-  #   - cron: '0 5 * * *' # Türkiye saatiyle sabah 08:00'da çalışır
+  #   - cron: '0 5 * * *' 
 
 jobs:
   bildirim_gonder:
     runs-on: ubuntu-latest
+    
+    # İŞTE ÇÖZÜM BURASI: Bota dosyayı güncellemesi için yazma izni veriyoruz.
+    permissions:
+      contents: write
 
     steps:
     - name: Repoyu Klonla
@@ -23,7 +27,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
 
-    # Şifreler buraya! (GROQ_API_KEY eklendi)
     - name: Bildirim Scriptini Çalıştır
       env:
         ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
