@@ -5,7 +5,7 @@ on:
   schedule:
     # 0 6 * * * : Her sabah UTC saatiyle 06:00'da çalışır.
     # Türkiye (TSİ) 3 saat ileride olduğu için, bu saat Türkiye'de sabah 09:00'a denk gelir.
-    - cron: '0 6 * * *' 
+    - cron: '0 7 * * *' 
 
 jobs:
   bildirim_gonder:
