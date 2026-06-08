@@ -2,14 +2,16 @@ name: Sürpriz Bildirim Botu
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '0 5 * * *' 
+  schedule:
+    # 0 6 * * * : Her sabah UTC saatiyle 06:00'da çalışır.
+    # Türkiye (TSİ) 3 saat ileride olduğu için, bu saat Türkiye'de sabah 09:00'a denk gelir.
+    - cron: '0 6 * * *' 
 
 jobs:
   bildirim_gonder:
     runs-on: ubuntu-latest
     
-    # İŞTE ÇÖZÜM BURASI: Bota dosyayı güncellemesi için yazma izni veriyoruz.
+    # Bota dosyayı güncellemesi için yazma izni veriyoruz.
     permissions:
       contents: write
 
