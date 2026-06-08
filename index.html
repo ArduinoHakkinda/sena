@@ -11,8 +11,7 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
-          // SİHİRLİ DÜZELTME BURADA:
-          // 'scope' sitenin neresinde çalıştığını, 'path' ise dosyanın tam yerini belirtir.
+          // 'scope' ve 'path' içine /sena/ koyarak tarayıcıyı klasör yapısına zorluyoruz:
           serviceWorkerParam: { scope: "/sena/" },
           serviceWorkerPath: "/sena/OneSignalSDKWorker.js",
           notifyButton: { enable: false },
