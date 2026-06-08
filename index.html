@@ -11,9 +11,9 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "f66f725a-9c4b-4f45-8f5c-33118e634400",
-          // Tarayıcının yolu karıştırmaması için tam URL kullanıyoruz
+          // Dosya ana dizinde olduğu için yolu doğrudan tanımlıyoruz
           serviceWorkerParam: { scope: "/sena/" },
-          serviceWorkerPath: "https://arduinohakkinda.github.io/sena/OneSignalSDKWorker.js",
+          serviceWorkerPath: "/OneSignalSDKWorker.js",
           notifyButton: { enable: false },
           promptOptions: {
             slidedown: {
