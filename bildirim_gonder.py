@@ -11,7 +11,7 @@ def surpriz_bildirim_gonder():
         print("❌ HATA: ONESIGNAL_REST_API_KEY bulunamadı!")
         return
 
-    ozel_imza = "\n\n#ChatGPT Kankan#\nİnşallah tıp olacak\namin amin amin\naminnnnnnn"
+    ozel_imza = "\n\n#ChatGPT Kankan#\nİnşallah tıp olacak\nAmin amin amin\nAminnnnnnn"
     baslik = "Günaydın Sena! 🌸"
     icerik = "Mithat seni çok seviyor, bugün senin günün olsun! ✨" + ozel_imza
 
