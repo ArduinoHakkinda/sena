@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Fixed Magical Flowers</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+  <style>
+    /* Sitenin kenarlarındaki boşlukları sıfırlayıp tam ekran yapıyoruz */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: rgb(5, 5, 15);
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  let flowers = [];
+  let particles = [];
+  let hearts = [];
+  let wind_phase = 0.0;
+  let species_cycle_idx = 0;
+
+  class Particle {
+    constructor(x, y, col) {
+      this.x = x;
+      this.y = y;
+      this.vx = random(-0.3, 0.3);
+      this.vy = random(-1.2, -0.4);
+      this.alpha = 255;
+      this.size = random(3, 6);
+      this.col = col; 
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.alpha -= 3;
+    }
+    draw() {
+      if (this.alpha > 0) {
+        noStroke();
+        fill(this.col[0], this.col[1], this.col[2], this.alpha);
+        circle(this.x, this.y, this.size);
+      }
+    }
+  }
+
+  class Heart {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.alpha = 255;
+      this.size = random(10, 18);
+      this.vy = random(-1.0, -0.4);
+    }
+    update() {
+      this.y += this.vy;
+      this.alpha -= 2;
+    }
+    draw() {
+      if (this.alpha <= 0) return;
+      noStroke();
+      fill(255, 70, 90, this.alpha);
+      
+      push();
+      translate(this.x, this.y);
+      beginShape();
+      vertex(0, -this.size);
+      bezierVertex(this.size, -this.size * 1.5, this.size * 1.3, -this.size * 0.2, 0, this.size);
+      bezierVertex(-this.size * 1.3, -this.size * 0.2, -this.size, -this.size * 1.5, 0, -this.size);
+      endShape(CLOSE);
+      pop();
+    }
+  }
+
+  class Flower {
+    constructor() {
+      this.x = random(60, width - 60);
+      this.y = random(60, height - 60);
+      this.bloom = 0.0;
+
+      colorMode(HSB, 1.0);
+      let hue = random(1.0);
+      let saturation = random(0.85, 1.0);
+      let value = random(0.9, 1.0);
+      let c = color(hue, saturation, value);
+      colorMode(RGB, 255); 
+      
+      this.color = [red(c), green(c), blue(c)];
+      this.center_color = [255, 230, 80];
+      this.petal_count = floor(random(10, 17));
+      this.size = floor(random(26, 49));
+
+      let species_sequence = ["tulip", "rose", "daisy"];
+      this.species = species_sequence[species_cycle_idx % species_sequence.length];
+      species_cycle_idx++;
+      this.phase = random(0, 10);
+    }
+
+    update() {
+      if (this.bloom < 1) {
+        this.bloom = min(1.0, this.bloom + 0.02 * (1.0 - this.bloom * 0.6));
+      }
+
+      if (random() < 0.22) {
+        let count = floor(random(2, 5));
+        for (let i = 0; i < count; i++) {
+          particles.push(new Particle(this.x, this.y - 90 * this.bloom, this.color));
+        }
+      }
+    }
+
+    draw() {
+      push();
+      translate(this.x, this.y);
+
+      let sway = sin(frameCount * 0.015 + this.phase) * 0.08;
+      rotate(sway);
+
+      let flower_center_y = -max(45, this.size * 2);
+
+      // Sap kısmı
+      stroke(40, 200, 90);
+      strokeWeight(5);
+      line(0, 0, 0, flower_center_y);
+
+      noStroke();
+      fill(60, 180, 90, 220);
+      
+      // Yaprak 1
+      push();
+      translate(0, flower_center_y * 0.5);
+      rotate(-0.8);
+      beginShape();
+      vertex(0, 0);
+      bezierVertex(this.size * 0.8, -this.size * 0.2, this.size * 0.9, this.size * 0.3, this.size * 1.1, 0);
+      bezierVertex(this.size * 0.7, -this.size * 0.1, this.size * 0.3, -this.size * 0.1, 0, 0);
+      endShape(CLOSE);
+      pop();
+
+      // Yaprak 2
+      push();
+      translate(0, flower_center_y * 0.65);
+      rotate(0.9);
+      beginShape();
+      vertex(0, 0);
+      bezierVertex(-this.size * 0.8, -this.size * 0.2, -this.size * 0.9, this.size * 0.3, -this.size * 1.1, 0);
+      bezierVertex(-this.size * 0.7, -this.size * 0.1, -this.size * 0.3, -this.size * 0.1, 0, 0);
+      endShape(CLOSE);
+      pop();
+
+      // Çiçek Türleri
+      noStroke();
+      if (this.species === "daisy") {
+        push();
+        translate(0, flower_center_y);
+        for (let layer = 0; layer < 2; layer++) {
+          let alpha = int((layer === 0 ? 190 : 110) * (0.5 + 0.5 * this.bloom));
+          let scale_factor = (layer === 0 ? 1.0 : 0.85);
+          for (let i = 0; i < this.petal_count; i++) {
+            let angle = TWO_PI * i / this.petal_count;
+            push();
+            rotate(angle * this.bloom);
+            scale(scale_factor);
+            fill(this.color[0], this.color[1], this.color[2], alpha);
+            beginShape();
+            vertex(0, 0);
+            bezierVertex(
+              this.size * 0.35, -this.size * (0.4 + 0.5 * this.bloom),
+              this.size * 0.15, -this.size * (0.8 + 0.8 * this.bloom),
+              0, -this.size * (1.1 + 0.9 * this.bloom)
+            );
+            endShape(CLOSE);
+            pop();
+          }
+        }
+        pop();
+      } else if (this.species === "tulip") {
+        push();
+        translate(0, flower_center_y);
+        let petals = 6;
+        for (let i = 0; i < petals; i++) {
+          let angle = TWO_PI * i / petals;
+          push();
+          rotate(angle * this.bloom);
+          fill(this.color[0], this.color[1], this.color[2], int(210 * (0.5 + 0.5 * this.bloom)));
+          beginShape();
+          vertex(0, 0);
+          bezierVertex(
+            this.size * (0.6 + 0.4 * this.bloom), -this.size * (0.3 + 0.3 * this.bloom),
+            this.size * (0.4 + 0.2 * this.bloom), -this.size * (0.9 + 0.7 * this.bloom),
+            0, -this.size * (1.0 + 0.8 * this.bloom)
+          );
+          bezierVertex(
+            -this.size * (0.4 + 0.2 * this.bloom), -this.size * (0.9 + 0.7 * this.bloom),
+            -this.size * (0.6 + 0.4 * this.bloom), -this.size * (0.3 + 0.3 * this.bloom),
+            0, 0
+          );
+          endShape(CLOSE);
+          pop();
+        }
+        pop();
+      } else {
+        push();
+        translate(0, flower_center_y);
+        let layers = 3;
+        for (let layer = 0; layer < layers; layer++) {
+          let ring_count = this.petal_count + layer * 3;
+          let radius = this.size * (0.3 + 0.35 * layer) * (0.3 + 0.7 * this.bloom);
+          let alpha = int((145 + layer * 30) * (0.5 + 0.5 * this.bloom));
+          for (let i = 0; i < ring_count; i++) {
+            let angle = TWO_PI * i / ring_count;
+            let px = cos(angle) * radius * 0.25;
+            let py = -sin(angle) * radius * 0.25;
+            push();
+            translate(px, py);
+            rotate(angle * this.bloom);
+            fill(this.color[0], this.color[1], this.color[2], alpha);
+            beginShape();
+            vertex(0, 0);
+            bezierVertex(
+              this.size * 0.4, -this.size * (0.3 + 0.3 * this.bloom),
+              this.size * 0.2, -this.size * (0.6 + 0.4 * this.bloom),
+              0, -this.size * (0.7 + 0.5 * this.bloom)
+            );
+            endShape(CLOSE);
+            pop();
+          }
+        }
+        pop();
+      }
+
+      // Merkez Göbek
+      fill(this.center_color[0], this.center_color[1], this.center_color[2]);
+      circle(0, flower_center_y, this.size * (0.4 + 0.6 * this.bloom));
+
+      pop();
+    }
+  }
+
+  function setup() {
+    // Canvas'ı direkt olarak kullanıcının ekran boyutuna göre tam ekran yapıyoruz
+    createCanvas(windowWidth, windowHeight);
+    frameRate(60);
+  }
+
+  function draw() {
+    background(5, 5, 15);
+    wind_phase += 0.0;
+
+    // Arka plan otları
+    noStroke();
+    for (let i = 0; i < 36; i++) {
+      let base_x = int(i * (width / 36.0) + random(-6, 6));
+      let base_y = height;
+      let blade_h = random(18, 42);
+      let sway = 0;
+      fill(40 + i % 3 * 10, 160 + (i * 3) % 30, 70 + (i * 5) % 20, 220);
+      push();
+      translate(base_x, base_y);
+      beginShape();
+      vertex(0, 0);
+      bezierVertex(2, -blade_h * 0.3, 3 + sway * 0.05, -blade_h * 0.7, sway, -blade_h);
+      bezierVertex(-3 + sway * 0.05, -blade_h * 0.7, -2, -blade_h * 0.3, 0, 0);
+      endShape(CLOSE);
+      pop();
+    }
+
+    // Çiçek oluşturma
+    if (flowers.length < 60 && random() < 0.20) {
+      flowers.push(new Flower());
+    }
+
+    // Kalp oluşturma
+    if (random() < 0.18) {
+      let count = floor(random(1, 3));
+      for (let i = 0; i < count; i++) {
+        hearts.push(new Heart(random(20, width - 20), random(20, height - 20)));
+      }
+    }
+
+    // Güncellemeler ve çizimler
+    for (let f of flowers) {
+      f.update();
+      f.draw();
+    }
+
+    // Parçacıkları tersten döngüye alarak güvenli şekilde siliyoruz (Python'daki [:] dilimlemesi alternatifi)
+    for (let i = particles.length - 1; i >= 0; i--) {
+      particles[i].update();
+      particles[i].draw();
+      if (particles[i].alpha <= 0) {
+        particles.splice(i, 1);
+      }
+    }
+
+    for (let i = hearts.length - 1; i >= 0; i--) {
+      hearts[i].update();
+      hearts[i].draw();
+      if (hearts[i].alpha <= 0) {
+        hearts.splice(i, 1);
+      }
+    }
+  }
+
+  // Tarayıcı boyutu değişirse animasyon bozulmasın diye canvas boyutunu güncelliyoruz
+  function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+  }
+</script>
+
+</body>
+</html>
