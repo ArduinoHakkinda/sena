@@ -2,16 +2,26 @@ name: Sürpriz Bildirim Botu
 
 on:
   workflow_dispatch:
+    inputs:
+      mesaj_turu:
+        description: 'Hangi yapay zeka mesajını göndermek istiyorsun?'
+        required: true
+        type: choice
+        options:
+          - otomatik
+          - sabah
+          - oglen
+      ozel_mesaj:
+        description: '(İsteğe bağlı) Kendi cümleni yazmak istersen buraya yaz:'
+        required: false
+        type: string
   schedule:
-    # 0 6 * * * : Her sabah UTC saatiyle 06:00'da çalışır.
-    # Türkiye (TSİ) 3 saat ileride olduğu için, bu saat Türkiye'de sabah 09:00'a denk gelir.
     - cron: '0 7 * * *' 
+    - cron: '0 11 * * *'
 
 jobs:
   bildirim_gonder:
     runs-on: ubuntu-latest
-    
-    # Bota dosyayı güncellemesi için yazma izni veriyoruz.
     permissions:
       contents: write
 
@@ -33,6 +43,8 @@ jobs:
       env:
         ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        MESAJ_TURU: ${{ github.event.inputs.mesaj_turu }}
+        OZEL_MESAJ: ${{ github.event.inputs.ozel_mesaj }}
       run: python bildirim_gonder.py
 
     - name: Yeni Mesajı Siteye Kaydet
@@ -40,5 +52,5 @@ jobs:
         git config --global user.name "ChatGPT Kankan"
         git config --global user.email "bot@senamithat.site"
         git add mesaj.json
-        git commit -m "Sena için yeni günaydın mesajı hazırlandı ✨" || echo "Değişiklik yok"
+        git commit -m "Sena için yeni sürpriz hazırlandı ✨" || echo "Değişiklik yok"
         git push
