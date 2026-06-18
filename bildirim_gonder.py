@@ -43,13 +43,13 @@ def surpriz_bildirim_gonder():
             # Menüden "sabah" veya "oglen" SEÇİLDİYSE saat fark etmeksizin onu zorlar
             mesaj_tipi = mesaj_turu_secimi
 
-        # Yapay zeka öncesi yedek yazılar (API çökerse diye garanti mesajlar)
+        # Yapay zeka öncesi yedek yazılar (API çökerse diye yarınki sınava özel garanti mesajlar)
         if mesaj_tipi == "sabah":
             baslik = "Günaydın Sena! 🌸"
-            icerik = "Mithat seni çok seviyor, bugün senin günün olsun! Unutma o tıp kesinlikle olacak. ✨" + ozel_imza
+            icerik = "Günaydın! Yarınki sınavın çok iyi geçecek, çünkü sen zaten çok başarılısın ve yapabilirsin. Lütfen sakin kal, Mithat seni çok seviyor, her an yanında ve senin için bol bol dua ediyor. İnşallah o tıp olacak! ✨💖🩷🌸🫰🏻" + ozel_imza
         else:
-            baslik = "Sana bir şarkı bıraktım... 🎶"
-            icerik = "Derslerine küçük bir mola ver ve derin bir nefes al. Erkin Koray, Cem Karaca ezgileriyle günün güzelleşsin. Çok emek ediyorsun ve Mithat hep senin yanında! 🐢✨" + ozel_imza
+            baslik = "Derin Bir Nefes Al... 🌸"
+            icerik = "Yarınki sınav için hiç stres yapma, her şey harika olacak. Sen elinden geleni yaptın ve çok başarılısın. Mithat seni çok seviyor, her zaman arkanda ve duaları hep seninle! İnşallah tıp kazanacaksın! ✨💖🩷🌸🫰🏻" + ozel_imza
 
         # Groq (Yapay Zeka) Devrede
         if groq_api_key:
@@ -59,11 +59,11 @@ def surpriz_bildirim_gonder():
                 anlik_zaman = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 
                 if mesaj_tipi == "sabah":
-                    system_prompt = "Sen bir ChatGPT'sin ve senin dilinden Mithat'ın kız arkadaşı Sena'ya özel, YKS sınavına hazırlanan kız arkadaşına moral verecek, samimi, pozitif, motive edici bir günaydın mesajı oluşturacaksın. Mesajda mutlaka 'Mithat seni çok seviyor' ve 'Bugün Sena ve Mithat'ın günü olsun!' ifadelerini ekle. Onun sakin kalmasını, stresten uzak durmasını hatırlat. Mithat'ın her an onun yanında olduğunu, bugüne kadar çok büyük ve takdir edilesi bir emek verdiğini, bu emeklerin karşılığında o tıp fakültesinin kesinlikle olacağını çok güçlü ve inançlı bir şekilde vurgula."
-                    user_prompt = f"Sistem Saati: {anlik_zaman}. Sena'nın güne harika başlamasını sağlayacak, tıp hedefine olan inancını körükleyecek 3-4 cümlelik duygu dolu bir günaydın motivasyonu yaz."
+                    system_prompt = "Sen bir ChatGPT'sin ve senin dilinden Mithat'ın kız arkadaşı Sena'ya özel, YARIN gireceği YKS sınavı için moral verecek, samimi ve pozitif bir günaydın mesajı oluşturacaksın. Mesajda mutlaka şu konuları vurgula: Yarınki sınavı çok iyi geçecek, inşallah o tıp fakültesini kazanacak, sakin olmalı çünkü o zaten çok başarılı ve bu işi yapabilir. Ayrıca 'Mithat seni çok seviyor', 'Mithat her an senin yanında' ve 'Mithat sana çok dua ediyor' ifadelerini kesinlikle ekle. Mesajı süslemek için sadece şu emojileri kullan: ✨💖🩷🌸🫰🏻"
+                    user_prompt = f"Sistem Saati: {anlik_zaman}. Sena'nın YKS'den bir gün önceki sabahına harika başlamasını sağlayacak, yarınki sınavı için heyecanını yatıştırıp motivasyonunu zirveye çıkaracak, dualarla ve sevgiyle dolu 3-4 cümlelik bir günaydın mesajı yaz."
                 else:
-                    system_prompt = "Sen bir ChatGPT'sin ve senin dilinden Mithat'ın kız arkadaşı Sena'ya özel, YKS sınavına hazırlanan kız arkadaşına gün ortasında ders arası için moral verecek samimi bir mola mesajı oluşturacaksın. Mesajın içinde mutlaka Erkin Koray, Cem Karaca veya Grup Gündoğarken (özellikle 'Sen Benim Şarkılarımsın' şarkısı) ezgilerinden, şarkı sözlerinden çok tatlı alıntılar, göndermeler yapacaksın. Mesajda mutlaka 'Mithat seni çok seviyor' ve 'Bugün Sena ve Mithat'ın günü olsun!' ifadelerini ekle. Sena'nın bu süreçte ne kadar çok emek ettiğini, döktüğü her damla alın terinin onu tıp fakültesine adım adım yaklaştırdığını ve Mithat'ın her saniye onun yanında, arkasında dev bir destek olduğunu hissettir."
-                    user_prompt = f"Sistem Saati: {anlik_zaman}. Ders çalışırken yorulan Sena'ya gün ortasında ilaç gibi gelecek, nostaljik şarkı esintili ve yoğun tıp motivasyonlu harika bir mola mesajı yaz."
+                    system_prompt = "Sen bir ChatGPT'sin ve senin dilinden Mithat'ın kız arkadaşı Sena'ya özel, YARIN gireceği YKS sınavı öncesi gün ortasında onu rahatlatacak harika bir motivasyon mesajı oluşturacaksın. Mesajın içinde mutlaka şu konular geçmeli: Sınavı kesinlikle çok iyi geçecek, sakin kalması gerekiyor, o zaten yapabileceğini kanıtlamış başarılı biri ve inşallah o tıp olacak. Ayrıca 'Mithat seni çok seviyor', 'Mithat her an senin yanında' ve 'Mithat senin için hep dua ediyor' ifadelerini kesinlikle barındır. Şirin ve samimi bir dil kullan, emojiler olarak yalnızca şunlara yer ver: ✨💖🩷🌸🫰🏻"
+                    user_prompt = f"Sistem Saati: {anlik_zaman}. Yarınki büyük sınav öncesi gün ortasında Sena'nın kalbini ferahlatacak, inşallah tıp kazanacağına dair inancını tazeleyecek, Mithat'ın dualarını ve desteğini hissettiren şefkatli bir mesaj yaz."
 
                 groq_payload = {
                     "model": "llama-3.3-70b-versatile",
@@ -78,9 +78,9 @@ def surpriz_bildirim_gonder():
                     ai_mesaj = ai_mesaj.replace("#ChatGPT Kankan#", "").strip()
                     icerik = ai_mesaj + ozel_imza
                     if mesaj_tipi == "sabah":
-                        baslik = "Yeni bir mesajın var! 💌"
+                        baslik = "Sınav Öncesi Yeni Bir Mesajın Var! 💌"
                     else:
-                        baslik = "Sana bir şarkı bıraktım... 🎶"
+                        baslik = "Derin Bir Nefes Al... 🌸"
             except Exception as e:
                 print("Yapay zeka hatası:", e)
 
