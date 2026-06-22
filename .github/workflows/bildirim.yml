@@ -15,8 +15,7 @@ on:
         description: '(İsteğe bağlı) Kendi cümleni yazmak istersen buraya yaz:'
         required: false
         type: string
-  schedule:
-    - cron: '0 11 * * *' # Sadece öğlen/ikinci mesaj otomatik tetiklenecek (UTC 11:00 -> TSİ 14:00)
+
 
 jobs:
   bildirim_gonder:
